@@ -22,7 +22,7 @@ SMB_DOMAIN = os.environ.get("SMB_DOMAIN", "")
 ALLOWED_EXTENSIONS = {'pdf','jpg','jpeg','png','txt'}
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and len(filename.rsplit('.', 1)[1]) > 0
 
 def test_tcp_connect(host, port, timeout=6):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -140,7 +140,11 @@ def upload_file():
                     pass
                 conn.storeFile(SMB_SHARE, filename, file_bytes)
                 conn.close()
-                return jsonify({"success": f"File {filename} uploaded to SMB on port {port}"}), 200
+                return jsonify({
+                	    "success": f"File {filename} uploaded to SMB on port {port}",
+	    	    "filename": filename
+		}), 200
+
             except Exception as e:
                 last_smb_error = f"storeFile failed on port {port}: {repr(e)}"
                 try:
