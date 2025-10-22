@@ -1,3 +1,4 @@
 flask
 pysmb
 gunicorn
+Flask-cors
